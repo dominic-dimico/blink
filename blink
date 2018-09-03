@@ -1,0 +1,171 @@
+#!/usr/bin/python
+
+import numpy as np
+import cv2, csv
+import getopt, sys
+import code
+import time
+import random
+
+
+try:
+ opts, args = getopt.getopt(
+    args=sys.argv[1:], 
+    shortopts="B:W::b:F:i:o:l:w:h:r:ZDRs", longopts=[
+      "between=",
+      "within=",
+      "bgcolor=",
+      "fgcolor=",
+      "input=",
+      "output=",
+      "loop=",
+      "width=",
+      "height=",
+      "refresh=",
+      "fullscreen",
+      "nodisplay",
+      "record",
+      "shuffle"
+    ]);
+except getopt.GetoptError as err:
+  print str(err)
+  #usage()
+  sys.exit(2)
+
+
+between = 500
+within  = 200
+bgcolor = "black"
+fgcolor = "white"
+output  = "output.avi" 
+infile  = "/dev/stdin"
+loop    = 1
+width   = 1024
+height  = 768 
+refresh = 30
+fullscreen = True
+display = True
+record  = False
+shuffle = False
+
+
+for option, value in opts:
+  if option == "-v":
+    verbose = True
+  elif option in ("-B", "--between"):
+    between = int(value)
+  elif option in ("-W", "--within"):
+    within = int(value)
+  elif option in ("-b", "--bgcolor"):
+    bgcolor = value
+  elif option in ("-F", "--fgcolor"):
+    fgcolor = value
+  elif option in ("-i", "--input"):
+    infile = value
+  elif option in ("-o", "--output"):
+    output = value
+  elif option in ("-l", "--loop"):
+    loop = int(value)
+  elif option in ("-w", "--width"):
+    width = int(value)
+  elif option in ("-h", "--height"):
+    height = int(value)
+  elif option in ("-r", "--refresh"):
+    refresh = int(value)
+  elif option in ("-Z", "--fullscreen"):
+    fullscreen = value
+  elif option in ("-D", "--nodisplay"):
+    display = False
+  elif option in ("-R", "--record"):
+    record = True
+  elif option in ("-s", "--shuffle"):
+    shuffle = True
+  else:
+    assert False, "-unhandled option"
+
+
+ # Create a black image
+img = np.zeros((height,width,3), np.uint8)
+
+# Write some Text
+font       = cv2.FONT_HERSHEY_COMPLEX
+fontscale  = 2
+fontColor  = (255,255,255)
+nullColor  = (0,0,0)
+thickness  = 2
+
+
+
+phrases = [];
+with open(infile) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    num=0;
+    for row in csv_reader:
+        num+=1;
+        for el in row:
+          phrases.append(el);
+        if num==1: 
+          ts = []
+          rotate=len(row);
+        t = tuple(row)
+        ts.append(t);
+
+
+
+def shuffler(ts):
+    random.shuffle(ts)
+    els = []
+    for t in ts:
+        for el in t:
+            els.append(el);
+    return els;
+
+
+
+def puttext(phrase, where, color):
+    cv2.putText(img, phrase, where, font, fontscale, color, thickness)
+
+
+
+
+iscolor=True
+size = width,height
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+vid = cv2.VideoWriter(output, fourcc, float(refresh), size, iscolor)
+
+
+
+def writevid(vid, img, millisecs):
+    nframes = refresh*(millisecs/1000.0)
+    while nframes > 0:
+          vid.write(img);
+          nframes -= 1;
+    return vid;
+
+
+
+it = 1;
+vid = writevid(vid, img, between);
+for i in range(0, loop):
+
+    if shuffle == True: phrases = shuffler(ts);
+    for phrase in phrases:
+
+        ((x, _), _) = cv2.getTextSize(phrase, font, fontscale, thickness)
+        where = (width/2-x/2, height/2)
+        puttext(phrase, where, fontColor);
+        if record: vid = writevid(vid, img, within);
+        if display: 
+           cv2.imshow("img", img)
+           cv2.waitKey(within);
+
+        puttext(phrase, where, nullColor);
+        if it % rotate == 0: 
+           if display: 
+             cv2.imshow("img", img)
+             cv2.waitKey(between)
+           if record: vid = writevid(vid, img, between);
+        it += 1;
+
+
+vid.release();
