@@ -1,0 +1,44 @@
+.TH cmdname 1
+.SH NAME
+blink \- blink words to screen
+.SH SYNOPSIS
+.B blink
+[OPTIONS]
+.SH DESCRIPTION
+Blinks words from a CSV file to the screen.  Used for associative learning.
+.SH OPTIONS
+.TP
+.BR \-B ", " \-\-between" " \fIint\fR
+time to delay between rows
+.TP
+.BR \-W ", " \-\-within" " \fIint\fR
+time to delay within rows
+.TP
+.BR \-i ", " \-\-input" " \fIchar*\fR
+input CSV file (default input.csv)
+.TP
+.BR \-o ", " \-\-output " " \fIchar*\fR
+record the video to an XVID-encoded file by filename (defailt output.avi)
+.TP
+.BR \-l ", " \-\-loop " " \fIint\fR
+loop number of times (default 1)
+.TP
+.BR \-w ", " \-\-width " " \fIint\fR
+the width of the SDL window
+.TP
+.BR \-h ", " \-\-height " " \fIint\fR
+the height of the SDL window
+.TP
+.BR \-r ", " \-\-refresh " " \fIint\fR
+refresh rate of the video (default 30)
+.TP
+.BR \-Z ", " \-\-fullscreen " " \fIbool\fR
+fullscreen the SDL window
+.TP
+.BR \-D ", " \-\-display " " \fIbool\fR
+do not display (used for recording)
+.TP
+.BR \-R ", " \-\-record " " \fIbool\fR
+record video to XVID (.avi) format
+.SH AUTHOR
+Written by Dominic Di'Mico <dominic.dimico@gmail.com>.
