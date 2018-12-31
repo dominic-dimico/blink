@@ -89,7 +89,7 @@ img = np.zeros((height,width,3), np.uint8)
 
 # Write some Text
 font       = cv2.FONT_HERSHEY_COMPLEX
-fontscale  = 2
+fontscale  = 1
 fontColor  = (255,255,255)
 nullColor  = (0,0,0)
 thickness  = 2
