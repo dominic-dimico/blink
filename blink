@@ -40,9 +40,9 @@ fgcolor = "white"
 output  = "output.avi" 
 infile  = "/dev/stdin"
 loop    = 1
-width   = 1024
-height  = 768 
-refresh = 30
+width   = 1280
+height  = 720 
+refresh = 48
 fullscreen = True
 display = True
 record  = False
@@ -85,6 +85,7 @@ for option, value in opts:
 
 
  # Create a black image
+#img = np.zeros((height,width,3), np.uint8)
 img = np.zeros((height,width,3), np.uint8)
 
 # Write some Text
