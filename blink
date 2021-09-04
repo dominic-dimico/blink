@@ -85,7 +85,6 @@ for option, value in opts:
 
 
  # Create a black image
-#img = np.zeros((height,width,3), np.uint8)
 img = np.zeros((height,width,3), np.uint8)
 
 # Write some Text
